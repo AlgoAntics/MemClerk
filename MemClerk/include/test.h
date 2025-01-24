@@ -6,12 +6,10 @@ class Test {
         int x = 5;
 
     public:
-        Test() {}
-        ~Test() {}
+        Test();
+        ~Test();
 
-        int get() {
-            return this->x;
-        }
+        int get();
 };
 
 #endif // TEST_H
