@@ -6,6 +6,8 @@
 
 namespace mc {
 
+typedef void* MemMarker;
+
 class MemoryAllocator {
     protected:
         MemoryTracker* p_tracker;
