@@ -3,7 +3,7 @@
 
 class Test {
     private:
-        int x = 5;
+        int x = 0;
 
     public:
         Test();
