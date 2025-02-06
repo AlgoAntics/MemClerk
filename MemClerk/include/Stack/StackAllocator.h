@@ -16,9 +16,14 @@ namespace mc {
             void deleteBuffer();
 
         public:
-            StackAllocator(uint64_t size, MemoryTracker* mem_tracker);
+            StackAllocator(MemoryTracker* mem_tracker);
             ~StackAllocator();
 
+            // Startup/Shutdown
+            void init(uint64_t size) override;
+            void shutdown() override;
+
+            // Allocation
             void* allocate(size_t size, size_t alignment, int16_t flag = -1) override;
             void deallocate(void* ptr) override;
 
