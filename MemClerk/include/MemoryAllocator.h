@@ -41,8 +41,14 @@ class MemoryAllocator {
         }
 
         template <typename T, typename... Args>
-        T* alloc(uint16_t flag = -1, Args&&... args) {
+        T* alloc(uint16_t flag, Args&&... args) {
             void* raw_data = allocate(sizeof(T), alignof(T), flag);
+            return new (raw_data) T(std::forward<Args>(args)...);
+        }
+
+        template <typename T, typename... Args>
+        T* alloc(Args&&... args) {
+            void* raw_data = allocate(sizeof(T), alignof(T), -1);
             return new (raw_data) T(std::forward<Args>(args)...);
         }
 };

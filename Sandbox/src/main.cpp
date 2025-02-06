@@ -8,7 +8,7 @@ int main() {
     mc::MemoryTracker myTracker;
     mc::StackAllocator myStack(&myTracker);
     myStack.init(100);
-    int* myInt = myStack.alloc<int>(5);
+    int* myInt = myStack.alloc<int>(69420);
 
     std::cout << *myInt << std::endl;
 
