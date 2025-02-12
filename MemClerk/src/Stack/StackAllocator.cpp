@@ -13,42 +13,47 @@ namespace mc {
     }
 
     // Init Separate to Allow User to Update Alloc Function
-    void StackAllocator::init(size_t size) {
+    void StackAllocator::init(size_t size, MemFlags flags) {
         m_buffer = this->m_Alloc(size);
         m_head = m_buffer;
 
-        m_size = size;
+        m_lastAlloc = m_head;
+
+        m_maxSize = size;
+        m_size = 0;
     }
 
     void StackAllocator::shutdown() {
         this->deleteBuffer();
     }
 
-    void* StackAllocator::allocate(size_t size, size_t alignment, int16_t flag) {
+    void* StackAllocator::allocate(size_t size, size_t alignment, MemFlags flag) {
+        // Assert Memory Size
+        if (m_size + size > m_maxSize) {
+            printf("Out of Memory");
+            std::abort();
+        }
+
         // TODO: Align the memory lol
-        void* data = static_cast<char*>(m_head) + size;
-        return data;
+        void* data = m_head;
+        m_head = static_cast<char*>(m_head) + size;
+
+        return data; 
     }
 
-    void StackAllocator::deallocate(void* ptr) {
+    void StackAllocator::deallocate(MemMarker marker) {
         // Error Checking (Mostly)
-        if (ptr < m_buffer || ptr > (char*)m_buffer + m_size) {
+        if (marker < m_buffer || marker > m_head) {
             printf("Invalid Marker: Marker Is Out Of Buffer Range");
             return;
         }
 
-        m_head = ptr;
+        m_size = (int)(static_cast<char*>(m_head) - static_cast<char*>(marker));
+        m_head = marker;
     }
 
-    void StackAllocator::resizeBuffer(size_t size) {
-        // This is weird, what if I want to just extend the memory not fully
-        // replace it?
-        void* new_mem = this->m_Alloc(size);
-        memcpy(new_mem, m_buffer, m_size);
-
-        this->m_DeAlloc(m_buffer);
-        m_buffer = new_mem;
-        m_size = size;
+    MemMarker StackAllocator::getMarker() {
+        return m_head;
     }
 
     void StackAllocator::deleteBuffer() {
@@ -57,6 +62,8 @@ namespace mc {
 
             m_buffer = nullptr;
             m_head = nullptr;
+            m_size = 0;
+            m_maxSize = 0;
         }
     }
 

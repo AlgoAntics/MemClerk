@@ -2,15 +2,18 @@
 #define STACK_ALLOCATOR_H
 
 #include "../MemoryAllocator.h"
+#include "../MemoryUtils.h"
 
 namespace mc {
 
     class StackAllocator : public MemoryAllocator {
         private:
+            // Allocation Tools
             void* m_buffer = nullptr;
             void* m_head = nullptr;
 
-            uint64_t m_size = 0;
+            // Reset Tools
+            MemMarker m_lastAlloc = nullptr;
 
         private:
             void deleteBuffer();
@@ -20,14 +23,14 @@ namespace mc {
             ~StackAllocator();
 
             // Startup/Shutdown
-            void init(uint64_t size) override;
+            void init(uint64_t size, MemFlags flags = (MemFlags)-1) override;
             void shutdown() override;
 
             // Allocation
-            void* allocate(size_t size, size_t alignment, int16_t flag = -1) override;
-            void deallocate(void* ptr) override;
+            void* allocate(size_t size, size_t alignment, MemFlags flag = MemFlags::ALLOC_LEFT) override;
+            void deallocate(MemMarker marker) override;
 
-            void resizeBuffer(uint64_t size);
+            MemMarker getMarker();
     };
 
 }
