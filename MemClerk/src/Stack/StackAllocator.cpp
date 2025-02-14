@@ -17,8 +17,6 @@ namespace mc {
         m_buffer = this->m_Alloc(size);
         m_head = m_buffer;
 
-        m_lastAlloc = m_head;
-
         m_maxSize = size;
         m_size = 0;
     }

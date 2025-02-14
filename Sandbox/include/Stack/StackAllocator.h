@@ -12,9 +12,6 @@ namespace mc {
             void* m_buffer = nullptr;
             void* m_head = nullptr;
 
-            // Reset Tools
-            MemMarker m_lastAlloc = nullptr;
-
         private:
             void deleteBuffer();
 
